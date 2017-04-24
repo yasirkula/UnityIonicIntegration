@@ -13,7 +13,7 @@ Before we start, I'd like to give credits to these other guides that helped me o
 - iOS: Xcode
 
 ## Ionic-side Setup
-- First things first, you should import the plugin (available in this git repo) into your Ionic app using **ionic plugin add path/to/UnityArCallerPluginIonic**
+- First things first, you should import the plugin (available in this git repo) into your Ionic app using `ionic plugin add path/to/UnityArCallerPluginIonic`
 - Now, you can call Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be different from Javascript):
 ```typescript
 declare let unityARCaller: any;
