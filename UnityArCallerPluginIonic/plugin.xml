@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        id="unityARCaller"
+        version="1.0.0">
+
+  <name>unityARCaller</name>
+
+  <js-module src="www/unityARCaller.js" name="unityARCaller">
+    <clobbers target="unityARCaller" />
+  </js-module>
+
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="LaunchAR">
+        <param name="android-package" value="org.apache.cordova.plugin.CordovaUnityLauncher"/>
+      </feature>
+    </config-file>
+	
+	<config-file target="AndroidManifest.xml" parent="/manifest/application">
+		<activity android:name="com.unitycaller.ionic.UnityPlayerExtendedActivity" android:label="@string/app_name" android:screenOrientation="portrait" android:process=":unityselfprocess" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale">
+			<meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+			<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="false" />
+		</activity>
+	</config-file>
+	
+	<source-file src="src/android/unity-classes.jar" target-dir="libs" />
+    <source-file src="src/android/CordovaUnityLauncher.java" target-dir="src/org/apache/cordova/plugin" />
+	<source-file src="src/android/UnityPlayerExtendedActivity.java" target-dir="src/com/unitycaller/ionic" />
+  </platform>
+  
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="LaunchAR">
+        <param name="ios-package" value="unityARCaller" />
+      </feature>
+    </config-file>
+    
+    <header-file src="src/ios/unityARCaller.h" />
+    <source-file src="src/ios/unityARCaller.m" />
+  </platform>
+</plugin>
