@@ -2,9 +2,10 @@
 This tutorial will show you how to integrate your Unity app into an Ionic app and send messages between them (optional). It is tested on a medium-scale commercial Unity project with Vuforia plugin (optional).
 
 Before we start, I'd like to give credits to these other guides that helped me overcome some challenges I've faced along the way:
-- will be
-- added here very soon
-- sorry for the inconvenience :-D
+- https://docs.google.com/document/d/1V8eh5Gh2O0fNc4gOvqdpLOwO9VvRrR0dP8EN2YAcb88/edit
+- https://github.com/keyv/iOSUnityVuforiaGuide
+- https://bitbucket.org/jack_loverde/unity-5-vuforia-6-and-ios-native-integration/src/418c4923eeac?at=master
+- http://alexanderwong.me/post/29861010648/call-objective-c-from-unity-call-unity-from
 
 (some screenshots will be added in future revisions)
 
@@ -13,7 +14,7 @@ Before we start, I'd like to give credits to these other guides that helped me o
 - iOS: Xcode
 
 ## Ionic-side Setup
-- First things first, you should import the plugin (available in this git repo) into your Ionic app using `ionic plugin add path/to/UnityArCallerPluginIonic`
+- First things first, you should import the plugin (the *UnityArCallerPluginIonic* folder in this repo) into your Ionic app using `ionic plugin add path/to/UnityArCallerPluginIonic`
 - Now, you can call Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be different from Javascript):
 ```typescript
 declare let unityARCaller: any;
@@ -34,103 +35,19 @@ uFailedCallback = (error) => {
 
 - All you have to do is call **openUnity()** function whenever you want to show Unity content and, (optionally) pass a String message to it. Upon returning from Unity to Ionic, **uSuccessCallback** is called with an (optional) String parameter *param* that is returned from the Unity-side
 
+**NOTE:** On Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, uSuccessCallback can not be called.
+
 ## Unity-side Setup
-- In the first scene of your game, create an empty GameObject called **IonicComms** and add the following IonicComms script as component:
-```csharp
-using System.IO;
-using UnityEngine;
-
-public class IonicComms : MonoBehaviour
-{
-    private static IonicComms Instance = null;
-
-#if !UNITY_EDITOR && UNITY_IOS
-    [System.Runtime.InteropServices.DllImport( "__Internal" )]
-    private static extern bool uHideUnity();
-
-    [System.Runtime.InteropServices.DllImport( "__Internal" )]
-    private static extern void uSendResultToIonic( string result );
-#endif
-
-    void Awake()
-    {
-        if( Instance == null )
-        {
-            Instance = this;
-        }
-        else if( this != Instance )
-        {
-            Destroy( this );
-        }
-    }
-    
-    void Start()
-    {
-        if( Instance != this )
-            return;
-
-        DontDestroyOnLoad( gameObject );
-
-#if !UNITY_EDITOR && UNITY_ANDROID
-        AndroidJavaClass activityClass = new AndroidJavaClass( "com.unity3d.player.UnityPlayer" );
-        AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>( "currentActivity" );
-
-        string data = activity.Get<string>( "commStr" );
-        OnMessageReceivedFromIonic( data );
-#endif
-    }
-
-    public void OnMessageReceivedFromIonic( string message )
-    {
-        if( string.IsNullOrEmpty( message ) )
-            return;
-
-        // Process message here
-    }
-
-    private void Update()
-    {
-        if( Input.GetKeyDown( KeyCode.Escape ) )
-            FinishActivity();
-    }
-
-    public static void FinishActivity( string returnMessage = null )
-    {
-        if( Instance != null )
-            Instance.startTime = Mathf.Infinity;
-        
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_ANDROID
-        AndroidJavaClass activityClass = new AndroidJavaClass( "com.unity3d.player.UnityPlayer" );
-        AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>( "currentActivity" );
-
-        if( !string.IsNullOrEmpty( returnMessage ) )
-            activity.Set<string>( "commStr", returnMessage );
-
-        activity.Call( "closeApp" );
-#elif UNITY_IOS
-        if( uHideUnity() == true ) 
-        {
-            Debug.Log( "Returned from Unity..." );
-
-            if( !string.IsNullOrEmpty( returnMessage ) )
-                uSendResultToIonic( returnMessage );
-        }
-#else
-        Application.Quit();
-#endif
-    }
-}
-```
-
+- Import **IonicComms.cs** script (available in this git repo) into your project
+- In the first scene of your game, create an empty GameObject called **IonicComms** and add the IonicComms script as component
 - If you pass a String message from Ionic to Unity, it will be available in the **OnMessageReceivedFromIonic** function
 - When you want to return to Ionic from Unity-side, just call **IonicComms.FinishActivity()** function (or, optionally, **IonicComms.FinishActivity( "message to Ionic" )** to send a message back)
 - **SO, DO NOT USE Application.Quit() ANYMORE!**
 - *for Vuforia users:* disable *Auto Graphics API* in Player Settings and remove everything but **OpenGLES2**
+- *for Android:* open **Build Settings** and set **Build System** to **Gradle (New)**. Then, select the **Export Project** option and click **Export** button to export your Unity project as a Gradle project to an empty folder
+- *for iOS:* in Player Settings, set **Scripting Backend** to **IL2CPP** and then simply build your project to an empty folder
 
 ## Android Steps
-- In Unity, open **Build Settings** and set **Build System** to **Gradle (New)**. Then, select the **Export Project** option and click **Export** button to export your Unity project as a Gradle project to an empty folder
 - Build your Ionic project using `ionic build android` (use `ionic platform add android`, if Android platform is not added yet)
 - Open *platforms/android* folder inside your Ionic project's path with Android Studio
 - Open **settings.gradle** and insert the following lines (**don't forget to change the path in the second line!**):
@@ -163,5 +80,54 @@ compile project(':UnityProject')
 
 **NOTE:** if you are able to build your Ionic project successfully the first time but not the second time, remove the Android platform using `ionic platform remove android` and add it again using `ionic platform add android`.
 
-## iOS Steps
-- Coming soon
+## iOS Steps (WIP, please ignore for now)
+- Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet)
+- (optional) use command `sudo chmod -R 777 .` to give full read/write access to the project folder in order to avoid any permission issues in Xcode
+- Open *platforms/ios* folder inside your Ionic project's path with Xcode
+- In *Plugins/unityARCaller.m*, uncomment the functions **(void)launchAR** and **(void)callUnityObject**
+- Rename *Classes/AppDelegate.m* to **Classes/AppDelegate.mm** (changed **.m** to **.mm**) and *Other Sources/main.m* to **Other Sources/main.mm**
+- Change the contents of **Classes/AppDelegate.h** with the AppDelegate.h found in this repo
+- Change the contents of **Classes/AppDelegate.mm** with the AppDelegate.mm found in this repo
+- *for non-Vuforia users:* in AppDelegate.mm, uncomment the lines marked with `//for non-vuforia:` and comment the lines marked with `//for vuforia:`
+- Create a group called **Unity** in your project
+- Drag&drop the **Classes** and **Libraries** folders from the Unity build folder to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed** (importing Classes might take quite some time)
+- Drag&drop the **unityconfig.xcconfig** config file found in this repo (not yet added, thus it is WIP) to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed**
+- Drag&drop the **Data** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
+- *for Vuforia users:* drag&drop the **Data/Raw/QCAR** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
+- Remove the **Libraries/libil2cpp** folder in Unity group from your Xcode project using **Remove References**
+- In **Configurations** of your project, set all the configurations as **unityconfig**
+- In **Build Settings**, set the value of **UNITY_IOS_EXPORTED_PATH** to the path of your Unity iOS build folder (do this for *PROJECT* and the *TARGETS*)
+- In **Build Settings**, select **Prefix Header** and press Delete to revert its value back to the default value (in case it is overridden)(do this for *PROJECT* and the *TARGETS*)
+- Open **Classes/UnityAppController.h** in Unity group and find the following function:
+```objc
+inline UnityAppController* GetAppController()
+{
+	return (UnityAppController*)[UIApplication sharedApplication].delegate;
+}
+```
+
+- Then, replace it with this one:
+```objc
+NS_INLINE UnityAppController* GetAppController()
+{
+	NSObject<UIApplicationDelegate>* delegate = [UIApplication sharedApplication].delegate;
+	UnityAppController* currentUnityController = (UnityAppController *)[delegate valueForKey:@"unityController"];
+	return currentUnityController;
+}
+```
+
+- Open **Classes/UnityAppController.mm** in Unity group, and replace `- (void)shouldAttachRenderDelegate {}` with the following function:
+```objc
+- (void)shouldAttachRenderDelegate {
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [delegate shouldAttachRenderDelegate];
+}
+```
+
+- Add `#import "AppDelegate.h"` to the top of **Classes/UnityAppController.mm**
+- Change the contents of **Other Sources/main.mm** with **Classes/main.mm** (located in Unity group) and replace `const char* AppControllerClassName = "UnityAppController";` with `const char* AppControllerClassName = "AppDelegate";` (in Other Sources/main.mm)
+- Remove **Classes/main.mm** in Unity group from your Xcode project using **Remove References**
+- *for Vuforia users:* in **Libraries/Plugins/iOS/VuforiaNativeRendererController.mm** in Unity group, comment the line `IMPL_APP_CONTROLLER_SUBCLASS(VuforiaNativeRendererController)`
+- Sign and build your project (it is advised to build to an actual iOS device rather than to emulator to possibly avoid some errors during the build phase)
+
+**NOTE:** if you encounter an error like "*cordova/cdvviewcontroller.h' file not found*" while building, try adding `"$(OBJROOT)/UninstalledProducts/$(PLATFORM_NAME)/include"` to **Header Search Paths** in **Build Settings** (do this for *PROJECT* and the *TARGETS*)

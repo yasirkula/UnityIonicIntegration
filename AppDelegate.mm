@@ -1,0 +1,123 @@
+#import "AppDelegate.h"
+#import "MainViewController.h"
+#import "VuforiaRenderDelegate.h"
+
+//for non-vuforia:
+//extern "C" void UnitySetGraphicsDevice(void* device, int deviceType, int eventType);
+//extern "C" void UnityRenderEvent(int marker);
+
+//for vuforia:
+extern "C" void VuforiaRenderEvent(int marker);
+
+@implementation AppDelegate
+
+- (void)shouldAttachRenderDelegate
+{
+    //for non-vuforia:
+    //UnityRegisterRenderingPlugin(&UnitySetGraphicsDevice, &UnityRenderEvent);
+    
+    //for vuforia:
+    self.unityController.renderDelegate = [[VuforiaRenderDelegate alloc] init];
+    UnityRegisterRenderingPlugin(NULL, &VuforiaRenderEvent);
+}
+
+- (UIWindow *)unityWindow {
+    return UnityGetMainWindow();
+}
+
+- (void) showUnityWindow {
+    NSLog(@"showUnityWindow");
+    
+    [self onAppDidBecomeActiveCallback:nil];
+    [self.unityWindow makeKeyAndVisible];
+}
+
+-(void) hideUnityWindow {
+    NSLog(@"hideUnityWindow");
+    
+    //[self onAppWillResignActiveCallback:nil];
+    [self.window makeKeyAndVisible];
+}
+
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
+{
+    self.viewController = [[MainViewController alloc] init];
+    
+    self.unityController = [[UnityAppController alloc] init];
+    [self.unityController application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    if (!self.initialized)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillTerminateCallback:)
+                                                     name:UIApplicationWillTerminateNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActiveCallback:)
+                                                     name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActiveCallback:)
+                                                     name:UIApplicationDidBecomeActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillEnterForegroundCallback:)
+                                                     name:UIApplicationWillEnterForegroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidEnterBackgroundCallback:)
+                                                     name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
+        self.initialized = YES;
+    }
+    
+    return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void)assignIonicComms:(unityARCaller*)comms
+{
+	self.ionicComms = comms;
+}
+
+- (void)sendResultToIonic:(NSString*)message
+{
+	[self.ionicComms returnResult:message];
+}
+
+- (void)onAppWillTerminateCallback:(NSNotification*)notification
+{
+    [self.unityController applicationWillTerminate:[UIApplication sharedApplication]];
+}
+
+- (void)onAppWillResignActiveCallback:(NSNotification*)notification
+{
+    [self.unityController applicationWillResignActive:[UIApplication sharedApplication]];
+}
+
+- (void)onAppWillEnterForegroundCallback:(NSNotification*)notification
+{
+    [self.unityController applicationWillEnterForeground:[UIApplication sharedApplication]];
+}
+
+- (void)onAppDidBecomeActiveCallback:(NSNotification*)notification
+{
+    [self.unityController applicationDidBecomeActive:[UIApplication sharedApplication]];
+}
+
+- (void)onAppDidEnterBackgroundCallback:(NSNotification*)notification
+{
+    [self.unityController applicationDidEnterBackground:[UIApplication sharedApplication]];
+}
+
+-(void)applicationWillResignActive:(UIApplication *)application{
+    //[self.unityController applicationWillResignActive:application];
+}
+
+-(void)applicationDidEnterBackground:(UIApplication *)application{
+    //[self.unityController applicationDidEnterBackground:application];
+}
+
+-(void)applicationWillEnterForeground:(UIApplication *)application{
+    //[self.unityController applicationWillEnterForeground:application];
+}
+
+-(void)applicationDidBecomeActive:(UIApplication *)application{
+    //[self.unityController applicationDidBecomeActive:application];
+}
+
+-(void)applicationWillTerminate:(UIApplication *)application{
+    //[self.unityController applicationWillTerminate:application];
+}
+
+@end
