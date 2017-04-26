@@ -80,7 +80,7 @@ compile project(':UnityProject')
 
 **NOTE:** if you are able to build your Ionic project successfully the first time but not the second time, remove the Android platform using `ionic platform remove android` and add it again using `ionic platform add android`.
 
-## iOS Steps (WIP, please ignore for now)
+## iOS Steps
 - Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet)
 - (optional) use command `sudo chmod -R 777 .` to give full read/write access to the project folder in order to avoid any permission issues in Xcode
 - Open *platforms/ios* folder inside your Ionic project's path with Xcode
@@ -91,7 +91,7 @@ compile project(':UnityProject')
 - *for non-Vuforia users:* in AppDelegate.mm, uncomment the lines marked with `//for non-vuforia:` and comment the lines marked with `//for vuforia:`
 - Create a group called **Unity** in your project
 - Drag&drop the **Classes** and **Libraries** folders from the Unity build folder to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed** (importing Classes might take quite some time)
-- Drag&drop the **unityconfig.xcconfig** config file found in this repo (not yet added, thus it is WIP) to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed**
+- Drag&drop the **unityconfig.xcconfig** config file found in this repo to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed**
 - Drag&drop the **Data** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
 - *for Vuforia users:* drag&drop the **Data/Raw/QCAR** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
 - Remove the **Libraries/libil2cpp** folder in Unity group from your Xcode project using **Remove References**
