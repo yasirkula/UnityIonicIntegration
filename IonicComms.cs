@@ -7,10 +7,13 @@ public class IonicComms : MonoBehaviour
 
 #if !UNITY_EDITOR && UNITY_IOS
     [System.Runtime.InteropServices.DllImport( "__Internal" )]
-    private static extern bool uHideUnity();
+    private static extern void uHideUnity();
 
     [System.Runtime.InteropServices.DllImport( "__Internal" )]
     private static extern void uSendResultToIonic( string result );
+	
+	[System.Runtime.InteropServices.DllImport( "__Internal" )]
+	private static extern void uNotifyUnityReady();
 #endif
 
     void Awake()
@@ -38,7 +41,15 @@ public class IonicComms : MonoBehaviour
 
         string data = activity.Get<string>( "commStr" );
         OnMessageReceivedFromIonic( data );
+#elif !UNITY_EDITOR && UNITY_IOS
+		uNotifyUnityReady();
 #endif
+    }
+	
+	void Update()
+    {
+        if( Input.GetKeyDown( KeyCode.Escape ) )
+            FinishActivity();
     }
 
     public void OnMessageReceivedFromIonic( string message )
@@ -49,37 +60,36 @@ public class IonicComms : MonoBehaviour
         // Process message here
     }
 
-    private void Update()
-    {
-        if( Input.GetKeyDown( KeyCode.Escape ) )
-            FinishActivity();
-    }
-
     public static void FinishActivity( string returnMessage = null )
     {
-        if( Instance != null )
-            Instance.startTime = Mathf.Infinity;
-        
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_ANDROID
-        AndroidJavaClass activityClass = new AndroidJavaClass( "com.unity3d.player.UnityPlayer" );
-        AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>( "currentActivity" );
-
-        if( !string.IsNullOrEmpty( returnMessage ) )
-            activity.Set<string>( "commStr", returnMessage );
-
-        activity.Call( "closeApp" );
-#elif UNITY_IOS
-        if( uHideUnity() == true ) 
-        {
-            Debug.Log( "Returned from Unity..." );
-
-            if( !string.IsNullOrEmpty( returnMessage ) )
-                uSendResultToIonic( returnMessage );
-        }
-#else
-        Application.Quit();
+        return;
 #endif
+
+        if( Instance == null )
+        {
+            Application.Quit();
+        }
+		else
+		{
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
+			AndroidJavaClass activityClass = new AndroidJavaClass( "com.unity3d.player.UnityPlayer" );
+			AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>( "currentActivity" );
+
+			if( !string.IsNullOrEmpty( returnMessage ) )
+				activity.Set<string>( "commStr", returnMessage );
+
+			activity.Call( "closeApp" );
+#elif UNITY_IOS
+			if( !string.IsNullOrEmpty( returnMessage ) )
+				uSendResultToIonic( returnMessage );
+						
+			uHideUnity()
+#else
+			Application.Quit();
+#endif
+		}
     }
 }

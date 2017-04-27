@@ -13,12 +13,16 @@ extern "C" void VuforiaRenderEvent(int marker);
 
 - (void)shouldAttachRenderDelegate
 {
-    //for non-vuforia:
-    //UnityRegisterRenderingPlugin(&UnitySetGraphicsDevice, &UnityRenderEvent);
-    
-    //for vuforia:
-    self.unityController.renderDelegate = [[VuforiaRenderDelegate alloc] init];
-    UnityRegisterRenderingPlugin(NULL, &VuforiaRenderEvent);
+    NSLog(@"should attach render delgate");
+    if( self.initialized )
+    {
+        //for non-vuforia:
+        //UnityRegisterRenderingPlugin(&UnitySetGraphicsDevice, &UnityRenderEvent);
+        
+        //for vuforia:
+        self.unityController.renderDelegate = [[VuforiaRenderDelegate alloc] init];
+        UnityRegisterRenderingPlugin(NULL, &VuforiaRenderEvent);
+    }
 }
 
 - (UIWindow *)unityWindow {
@@ -28,26 +32,15 @@ extern "C" void VuforiaRenderEvent(int marker);
 - (void) showUnityWindow {
     NSLog(@"showUnityWindow");
     
-    [self onAppDidBecomeActiveCallback:nil];
-    [self.unityWindow makeKeyAndVisible];
-}
-
--(void) hideUnityWindow {
-    NSLog(@"hideUnityWindow");
-    
-    //[self onAppWillResignActiveCallback:nil];
-    [self.window makeKeyAndVisible];
-}
-
-- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
-{
-    self.viewController = [[MainViewController alloc] init];
-    
-    self.unityController = [[UnityAppController alloc] init];
-    [self.unityController application:application didFinishLaunchingWithOptions:launchOptions];
-    
     if (!self.initialized)
     {
+        self.unityController = [[UnityAppController alloc] init];
+        [self.unityController application:self.m_application didFinishLaunchingWithOptions:self.m_options];
+        
+        self.m_waitingMessage = nil;
+        self.m_application = nil;
+        self.m_options = nil;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillTerminateCallback:)
                                                      name:UIApplicationWillTerminateNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActiveCallback:)
@@ -62,17 +55,61 @@ extern "C" void VuforiaRenderEvent(int marker);
         self.initialized = YES;
     }
     
+    [self onAppDidBecomeActiveCallback:nil];
+    [self.unityWindow makeKeyAndVisible];
+}
+
+-(void) hideUnityWindow {
+    NSLog(@"hideUnityWindow");
+    
+    //[self onAppWillResignActiveCallback:nil];
+    [self.window makeKeyAndVisible];
+}
+
+-(void)notifyUnityReady {
+    NSLog(@"unityReady notified");
+    
+    self.unityInitialized = YES;
+    
+    if( self.m_waitingMessage != nil )
+    {
+        [self sendMessageToUnity:self.m_waitingMessage];
+        
+        self.m_waitingMessage = nil;
+    }
+}
+
+// Source: https://the-nerd.be/2014/08/07/call-methods-on-unity3d-straight-from-your-objective-c-code/
+- (void)sendMessageToUnity:(NSString*)parameter
+{
+    if( self.unityInitialized )
+    {
+        UnitySendMessage("IonicComms", "OnMessageReceivedFromIonic", [parameter UTF8String]);
+    }
+    else
+    {
+        self.m_waitingMessage = parameter;
+    }
+}
+
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
+{
+    self.viewController = [[MainViewController alloc] init];
+    
+    self.m_application = application;
+    self.m_options = launchOptions;
+    
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (void)assignIonicComms:(unityARCaller*)comms
 {
-	self.ionicComms = comms;
+    self.ionicComms = comms;
 }
 
 - (void)sendResultToIonic:(NSString*)message
 {
-	[self.ionicComms returnResult:message];
+    [self.ionicComms returnResult:message];
 }
 
 - (void)onAppWillTerminateCallback:(NSNotification*)notification
