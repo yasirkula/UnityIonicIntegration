@@ -46,7 +46,7 @@ public class CordovaUnityLauncher extends CordovaPlugin
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if( requestCode == UNITY_LAUNCH_OP )
+        if( requestCode == UNITY_LAUNCH_OP && callback != null )
         {
             if( resultCode == Activity.RESULT_OK && data.hasExtra("my_param") )
             {

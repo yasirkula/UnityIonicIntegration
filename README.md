@@ -10,25 +10,54 @@ Before we start, I'd like to give credits to these other guides that helped me o
 ## System Requirements
 - Android: Android Studio
 - iOS: Xcode
+- Ionic: tested on `ionic info`:
+```
+Cordova CLI: 6.5.0 
+Ionic Framework Version: 3.3.0
+Ionic CLI Version: 2.2.1
+Ionic App Lib Version: 2.2.0
+Ionic App Scripts Version: 1.3.7
+ios-deploy version: 1.9.1 
+ios-sim version: 5.0.13 
+OS: macOS Sierra
+Node Version: v6.9.5
+Xcode version: Xcode 8.3.3 Build version 8E3004b
+```
+This plugin may not be compatible with future versions of Ionic!
 
 ## Ionic-side Setup
 - First things first, you should import the plugin (the *UnityArCallerPluginIonic* folder in this repo) into your Ionic app using `ionic plugin add path/to/UnityArCallerPluginIonic`
-- Now, you can call Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be different from Javascript):
+- Now, you can call Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be much different from Javascript):
 ```typescript
+import ...
+
+// Should put declare before any @Component's
 declare let unityARCaller: any;
 
-openUnity() {
-	// it is possible to send a string message to Unity-side (optional)
-	unityARCaller.launchAR("my message for Unity-side", this.uSuccessCallback, this.uFailedCallback );
-}
+@Component({
+  ...
+})
 
-uSuccessCallback = (param) => {
-	// param:String is the (optional) message received from Unity-side
-	alert( param );
-};
-uFailedCallback = (error) => {
-	// should ignore this callback
-};
+export class ...
+{
+	constructor() {
+		...
+	}
+	
+	openUnity() {
+		// it is possible to send a string message to Unity-side (optional)
+		unityARCaller.launchAR("my message for Unity-side", this.uSuccessCallback, this.uFailedCallback );
+	}
+
+	uSuccessCallback = (param) => {
+		// param:String is the (optional) message received from Unity-side
+		alert( param );
+	};
+	
+	uFailedCallback = (error) => {
+		// should ignore this callback
+	};
+}
 ```
 
 - All you have to do is call **openUnity()** function whenever you want to show Unity content and, (optionally) pass a String message to it. Upon returning from Unity to Ionic, **uSuccessCallback** is called with an (optional) String parameter *param* that is returned from the Unity-side
@@ -60,10 +89,13 @@ project(':UnityProject').projectDir = new File('C:\\absolute path\\to your\\unit
 compile project(':UnityProject')
 ```
 
+![](images/android1.png?raw=true "")
+
 - Click **Sync now** (top-right) and wait until Android Studio yields an error
 - In **build.gradle** of **UnityProject** module, change `apply plugin: 'com.android.application'` to `apply plugin: 'com.android.library'`
 - Inside **jniLibs** folder of **android** module, delete *unity-classes.jar*, if exists
 - Click **Sync now** again and wait for another error
+- If you receive the message "*Error: Library projects cannot set applicationId...*" inside **build.gradle** of **UnityProject** module, delete the line `applicationId 'com.your_unity_bundle_identifier'` and click **Sync now** again
 - Inside **manifests** folder of **android** module, open *AndroidManifest.xml* and switch to **Merged Manifest** tab
 - Click on the "*Suggestion: add 'tools:replace="android:icon"' to <application> element at AndroidManifest.xml to override*" text
 - Open *AndroidManifest.xml* of **UnityProject** module and switch to **Text** tab
@@ -77,18 +109,20 @@ compile project(':UnityProject')
 
 - Now you can Run the **android** module
 
+![](images/android2.png?raw=true "")
+
 **NOTE:** if you are able to build your Ionic project successfully the first time but not the second time, remove the Android platform using `ionic platform remove android` and add it again using `ionic platform add android`.
 
 ## iOS Steps
 **IMPORTANT NOTICE:** make sure that the path to your Ionic project does not contain any spaces.
-- Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet)
+- Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet). If you receive the following error at the end, it means the build was successful, no worries: `Signing for "MyIonicProject" requires a development team. Select a development team in the project editor.`
 - (optional) use command `sudo chmod -R 777 .` to give full read/write access to the project folder in order to avoid any permission issues in Xcode
 - Open *platforms/ios* folder inside your Ionic project's path with Xcode
 - In *Plugins/unityARCaller.m*, uncomment the **(void)launchAR** function
 - Rename *Classes/AppDelegate.m* to **Classes/AppDelegate.mm** (changed **.m** to **.mm**) and *Other Sources/main.m* to **Other Sources/main.mm**
 - Change the contents of **Classes/AppDelegate.h** with the AppDelegate.h found in this repo
 - Change the contents of **Classes/AppDelegate.mm** with the AppDelegate.mm found in this repo
-- *for non-Vuforia users:* in AppDelegate.mm, uncomment the lines marked with `//for non-vuforia:` and comment the lines marked with `//for vuforia:`
+- *for Vuforia users:* in AppDelegate.mm, uncomment the lines marked with `//for vuforia:`
 - Create a group called **Unity** in your project
 
 ![](images/ios1.png?raw=true "")

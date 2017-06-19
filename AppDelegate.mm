@@ -1,13 +1,11 @@
 #import "AppDelegate.h"
 #import "MainViewController.h"
-#import "VuforiaRenderDelegate.h"
-
-//for non-vuforia:
-//extern "C" void UnitySetGraphicsDevice(void* device, int deviceType, int eventType);
-//extern "C" void UnityRenderEvent(int marker);
 
 //for vuforia:
-extern "C" void VuforiaRenderEvent(int marker);
+//#import "VuforiaRenderDelegate.h"
+
+//for vuforia:
+//extern "C" void VuforiaRenderEvent(int marker);
 
 @implementation AppDelegate
 
@@ -16,12 +14,9 @@ extern "C" void VuforiaRenderEvent(int marker);
     NSLog(@"should attach render delgate");
     if( self.initialized )
     {
-        //for non-vuforia:
-        //UnityRegisterRenderingPlugin(&UnitySetGraphicsDevice, &UnityRenderEvent);
-        
         //for vuforia:
-        self.unityController.renderDelegate = [[VuforiaRenderDelegate alloc] init];
-        UnityRegisterRenderingPlugin(NULL, &VuforiaRenderEvent);
+        //self.unityController.renderDelegate = [[VuforiaRenderDelegate alloc] init];
+        //UnityRegisterRenderingPlugin(NULL, &VuforiaRenderEvent);
     }
 }
 

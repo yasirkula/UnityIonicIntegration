@@ -86,7 +86,7 @@ public class IonicComms : MonoBehaviour
 			if( !string.IsNullOrEmpty( returnMessage ) )
 				uSendResultToIonic( returnMessage );
 						
-			uHideUnity()
+			uHideUnity();
 #else
 			Application.Quit();
 #endif
