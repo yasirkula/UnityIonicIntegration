@@ -46,7 +46,7 @@ export class ...
 	
 	openUnity() {
 		// It is possible to send a string message to Unity-side (optional)
-		unityARCaller.launchAR( "my message for Unity-side", this.uReturnedFromUnityCallback, this.uMessageReceivedFromUnityCallback );
+		unityARCaller.launchAR( "my message for Unity-side", this.uReturnedFromUnity, this.uMessageReceivedFromUnity );
 	}
 	
 	sendMessageToUnity() {
@@ -54,12 +54,12 @@ export class ...
 		unityARCaller.sendMessage( "Function name", "Optional parameter" );
 	}
 	
-	uReturnedFromUnityCallback = (param) => {
+	uReturnedFromUnity = (param) => {
 		// param:String is the (optional) message returned from Unity-side
 		alert( param );
 	};
 	
-	uMessageReceivedFromUnityCallback = (message) => {
+	uMessageReceivedFromUnity = (message) => {
 		// message:String is the message received from Unity-side
 		// If you call a UI-blocking function here like 'alert', subsequent messages from Unity
 		// will be queued by the OS and will only be received after returning to Ionic and
@@ -73,7 +73,7 @@ export class ...
 
 - Unity and Ionic can keep communicating even while Unity view/activity is active. You can call a function on Unity-side from Ionic using the `unityARCaller.sendMessage( "Function name", "Optional parameter" );` function and, if you want, send a message back to Ionic (see [Unity-side Setup](#unity-side-setup)) that triggers **onMessageReceivedCallback**
 
-**NOTE:** On Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, uSuccessCallback can not be called.
+**NOTE:** On Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, onReturnedToIonicCallback can not be called.
 
 ## Unity-side Setup 
 - Import **IonicComms.cs** script (available in this git repo) into your project (you don't have to attach this script to any GameObject)
