@@ -26,8 +26,10 @@
 - (void)notifyUnityReady;
 
 - (void)sendMessageToUnity:(NSString*)parameter;
+- (void)sendMessageToUnity:(NSString*)func parameter:(NSString*)parameter;
 
 - (void)assignIonicComms:(unityARCaller*)comms;
-- (void)sendResultToIonic:(NSString*)message;
+- (void)sendMessageToIonic:(NSString*)message;
+- (void)sendResultToIonic:(NSString*)result;
 
 @end

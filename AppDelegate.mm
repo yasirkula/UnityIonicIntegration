@@ -3,8 +3,6 @@
 
 //for vuforia:
 //#import "VuforiaRenderDelegate.h"
-
-//for vuforia:
 //extern "C" void VuforiaRenderEvent(int marker);
 
 @implementation AppDelegate
@@ -87,6 +85,14 @@
     }
 }
 
+- (void)sendMessageToUnity:(NSString*)func parameter:(NSString*)parameter
+{
+    if( self.unityInitialized )
+    {
+        UnitySendMessage("IonicComms", [func UTF8String], [parameter UTF8String]);
+    }
+}
+
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
     self.viewController = [[MainViewController alloc] init];
@@ -102,9 +108,14 @@
     self.ionicComms = comms;
 }
 
-- (void)sendResultToIonic:(NSString*)message
+- (void)sendMessageToIonic:(NSString*)message
 {
-    [self.ionicComms returnResult:message];
+    [self.ionicComms receivedMessageFromUnity:message];
+}
+
+- (void)sendResultToIonic:(NSString*)result
+{
+    [self.ionicComms returnResult:result];
 }
 
 - (void)onAppWillTerminateCallback:(NSNotification*)notification

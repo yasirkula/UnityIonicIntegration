@@ -14,6 +14,9 @@
       <feature name="LaunchAR">
         <param name="android-package" value="org.apache.cordova.plugin.CordovaUnityLauncher"/>
       </feature>
+	  <feature name="SendMessage">
+        <param name="android-package" value="org.apache.cordova.plugin.CordovaUnityLauncher"/>
+      </feature>
     </config-file>
 	
 	<config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -31,6 +34,9 @@
   <platform name="ios">
     <config-file target="config.xml" parent="/*">
       <feature name="LaunchAR">
+        <param name="ios-package" value="unityARCaller" />
+      </feature>
+      <feature name="SendMessage">
         <param name="ios-package" value="unityARCaller" />
       </feature>
     </config-file>
