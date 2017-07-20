@@ -50,6 +50,7 @@
 							resultWithStatus:CDVCommandStatus_OK
 							messageAsString:[NSString stringWithFormat:@"%@%@",@"RETURN",result]];
 
+	[cdvResult setKeepCallbackAsBool:NO];
 	[self.commandDelegate sendPluginResult:cdvResult callbackId:self.cachedCallbackId];
 }
 
