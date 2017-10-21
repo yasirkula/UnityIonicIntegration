@@ -1,0 +1,31 @@
+{
+  "name": "UnityIonicIntegration",
+  "version": "1.0.0",
+  "description": "A plugin to communicate with embedded Unity 3D content",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yasirkula/UnityIonicIntegration.git"
+  },
+  "cordova": {
+    "id": "unityARCaller",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "yasirkula",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yasirkula/UnityIonicIntegration/issues"
+  },
+  "homepage": "https://github.com/yasirkula/UnityIonicIntegration#readme"
+}

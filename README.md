@@ -7,6 +7,8 @@ Before we start, I'd like to give credits to these other guides that helped me o
 - https://bitbucket.org/jack_loverde/unity-5-vuforia-6-and-ios-native-integration/src/418c4923eeac?at=master
 - https://the-nerd.be/2014/08/07/call-methods-on-unity3d-straight-from-your-objective-c-code/
 
+Also, a special thanks to all who contributed to the development of this plugin :)
+
 ## System Requirements
 - Android: Android Studio
 - iOS: Xcode
@@ -23,11 +25,12 @@ OS: macOS Sierra
 Node Version: v6.9.5
 Xcode version: Xcode 8.3.3 Build version 8E3004b
 ```
-This plugin may not be compatible with future versions of Ionic!
+
+**NOTE:** for future versions of Ionic, you may have to use `ionic cordova platform add` instead of `ionic platform add`, `ionic cordova plugin add` instead of `ionic plugin add` and so on.
 
 ## Ionic-side Setup
-- First things first, you should import the plugin (the *UnityArCallerPluginIonic* folder in this repo) into your Ionic app using `ionic plugin add path/to/UnityArCallerPluginIonic`
-- Now, you can launch Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be much different from Javascript):
+- First things first, you should import the plugin into your Ionic app using the following command: `ionic plugin add https://github.com/yasirkula/UnityIonicIntegration.git#1.0.0`
+- Now, you can launch Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be much different for Javascript):
 ```typescript
 import ...
 
@@ -76,15 +79,15 @@ export class ...
 **NOTE:** On Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, onReturnedToIonicCallback can not be called.
 
 ## Unity-side Setup 
-- Import **IonicComms.cs** script (available in this git repo) into your project (you don't have to attach this script to any GameObject)
-- If you had passed a String message from Ionic to Unity in **launchAR** function, it will be available in the **OnMessageReceivedFromIonic** function
-- You can call functions that you define inside *IonicComms.cs* from Ionic with **sendMessage** function. Although the parameter passed to sendMessage is optional, your C# function must have the following signature: `public void FunctionName( string message );`
+- Import **IonicComms.cs** script (available in **files** directory of this git repo) into your project. You don't have to attach this script to any GameObject but feel free to do it if you want to assign some references to it through Inspector. Just be aware that there can only be a single living instance of *IonicComms* component at a time and if you want to attach it manually to a GameObject, you must do it in the first scene of your project
+- If you had passed a String message from Ionic to Unity in **launchAR** function, it will be available in the **OnMessageReceivedFromIonic** function in *IonicComms.cs*
+- You can call functions that you define inside *IonicComms.cs* from Ionic with **unityARCaller.sendMessage** function. Although the parameter passed to sendMessage is optional, your C# function must have the following signature: `public void FunctionName( string message );`
 - You can send messages from Unity to Ionic runtime using `IonicComms.SendMessageToIonic( "my message" )`
 - When you want to return to Ionic from Unity-side, just call `IonicComms.FinishActivity()` function (or, optionally, `IonicComms.FinishActivity( "return value" )` to send back a return value)
 - **SO, DO NOT USE Application.Quit() ANYMORE!**
 - *for Vuforia users:* disable *Auto Graphics API* in Player Settings and remove everything but **OpenGLES2**
 - *for Android:* open **Build Settings** and set **Build System** to **Gradle (New)**. Then, select the **Export Project** option and click **Export** button to export your Unity project as a Gradle project to an empty folder
-- *for iOS:* put **uIonicComms.mm** file found in this repo into **Assets/Plugins/iOS** folder of your Unity project (create the *Plugins* and *iOS* folders, if they don't exist)
+- *for iOS:* put **uIonicComms.mm** file found in **files** directory of this repo into **Assets/Plugins/iOS** folder of your Unity project (create the *Plugins* and *iOS* folders, if they do not exist)
 - *for iOS:* in Player Settings, set **Scripting Backend** to **IL2CPP** and then simply build your project to an empty folder
 
 ## Android Steps
@@ -125,24 +128,33 @@ compile project(':UnityProject')
 
 **NOTE:** if you are able to build your Ionic project successfully the first time but not the second time, remove the Android platform using `ionic platform remove android` and add it again using `ionic platform add android`.
 
+### About 64-bit ARM, x86 and x64 Android Devices
+As of now, Unity has a native library for **32-bit ARM** and **x86** architectures only. However, Unity applications do run on **64-bit ARM** and **x64** architectures as 64-bit ARM architecture natively supports 32-bit ARM applications and x64 architecture natively support x86 applications. This is valid as long as **there are no 64-bit ARM or x64 plugins** in your project and **all your plugins have both 32-bit ARM and x86 libraries**. Otherwise, you will receive a "*Failure to initialize! Your hardware does not support this application, sorry!*" error while launching Unity content. To avoid this issue, you must ensure the following criteria:
+- If there are any **arm64-v8a**, **armeabi** or **x86_64** folders in the **jniLibs** directory of your Android Studio project, simply delete these folders. Your application will not be affected by this change as long as plugins in these folders have libraries in **armeabi-v7a** and **x86** folders, as well
+- If there is any plugin in your project that has a library in **armeabi-v7a** folder but not in **x86** folder (like *Vuforia*, unfortunately), you have to make the following decision: 
+  - either don't touch anything and your Ionic application will run on all architectures but the Unity content **will not launch** on Intel architecture devices (*x86* and *x64*)
+  - or delete the *x86* folder and both your Ionic application and the Unity content will run on all *ARM* architectures as well as on Intel architectures that support emulating ARM applications
+
+If you want consistency for your app, go with the second option.
+
 ## iOS Steps
-**IMPORTANT NOTICE:** make sure that the path to your Ionic project does not contain any spaces.
+**IMPORTANT NOTICE:** make sure that the paths to your Ionic project and Unity build directory do not contain any space characters.
 - Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet). If you receive the following error at the end, it means the build was successful, no worries: *Signing for "MyIonicProject" requires a development team. Select a development team in the project editor.*
 - (optional) use command `sudo chmod -R 777 .` to give full read/write access to the project folder in order to avoid any permission issues in Xcode
 - Open *platforms/ios* folder inside your Ionic project's path with Xcode
 - In *Plugins/unityARCaller.m*, uncomment the **(void)launchAR** and **(void)sendMessage** functions
 - Rename *Classes/AppDelegate.m* to **Classes/AppDelegate.mm** (changed **.m** to **.mm**) and *Other Sources/main.m* to **Other Sources/main.mm**
-- Change the contents of **Classes/AppDelegate.h** with the AppDelegate.h found in this repo
-- Change the contents of **Classes/AppDelegate.mm** with the AppDelegate.mm found in this repo
+- Change the contents of **Classes/AppDelegate.h** with the AppDelegate.h found in **files** directory of this repo
+- Change the contents of **Classes/AppDelegate.mm** with the AppDelegate.mm found in **files** directory of this repo
 - *for Vuforia users:* in AppDelegate.mm, uncomment the lines marked with `//for vuforia:`
 - Create a group called **Unity** in your project
 
 ![](images/ios1.png?raw=true "")
 
-- Drag&drop the **Classes** and **Libraries** folders from the Unity build folder to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed** (importing Classes might take quite some time)
-- Drag&drop the **unityconfig.xcconfig** config file found in this repo to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed**
-- Drag&drop the **Data** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
-- *for Vuforia users:* drag&drop the **Data/Raw/QCAR** folder from the Unity build folder to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
+- Drag&drop the **Classes** and **Libraries** folders from the Unity build directory to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed** (importing Classes might take quite some time)
+- Drag&drop the **unityconfig.xcconfig** config file found in **files** directory of this repo to the Unity group in Xcode; select **Create groups** and deselect **Copy items if needed**
+- Drag&drop the **Data** folder from the Unity build directory to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
+- *for Vuforia users:* drag&drop the **Data/Raw/QCAR** folder from the Unity build directory to the Unity group in Xcode; select **Create folder references** and deselect **Copy items if needed**
 
 ![](images/ios2.png?raw=true "")
 
@@ -151,7 +163,7 @@ compile project(':UnityProject')
 
 ![](images/ios3.png?raw=true "")
 
-- In **Build Settings**, set the value of **UNITY_IOS_EXPORTED_PATH** to the path of your Unity iOS build folder (do this for *PROJECT* and the *TARGETS*)
+- In **Build Settings**, set the value of **UNITY_IOS_EXPORTED_PATH** to the path of your Unity iOS build directory (do this for *PROJECT* and the *TARGETS*)
 
 ![](images/ios4.png?raw=true "")
 
