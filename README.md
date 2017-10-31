@@ -29,7 +29,7 @@ Xcode version: Xcode 8.3.3 Build version 8E3004b
 **NOTE:** for future versions of Ionic, you may have to use `ionic cordova platform add` instead of `ionic platform add`, `ionic cordova plugin add` instead of `ionic plugin add` and so on.
 
 ## Ionic-side Setup
-- First things first, you should import the plugin into your Ionic app using the following command: `ionic plugin add https://github.com/yasirkula/UnityIonicIntegration.git#1.0.0`
+- First things first, you should import the plugin into your Ionic app using the following command: `ionic plugin add https://github.com/yasirkula/UnityIonicIntegration.git`
 - Now, you can launch Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be much different for Javascript):
 ```typescript
 import ...
