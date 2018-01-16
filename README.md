@@ -26,7 +26,9 @@ Node Version: v6.9.5
 Xcode version: Xcode 8.3.3 Build version 8E3004b
 ```
 
-**NOTE:** for future versions of Ionic, you may have to use `ionic cordova platform add` instead of `ionic platform add`, `ionic cordova plugin add` instead of `ionic plugin add` and so on.
+For future versions of Ionic, you may have to use `ionic cordova platform add` instead of `ionic platform add`, `ionic cordova plugin add` instead of `ionic plugin add` and so on.
+
+If you are using Unity 2017.3.0+ and Vuforia, check this topic for possible issues that you may encounter during the integration process: https://github.com/yasirkula/UnityIonicIntegration/issues/16
 
 ## Ionic-side Setup
 - First things first, you should import the plugin into your Ionic app using the following command: `ionic plugin add https://github.com/yasirkula/UnityIonicIntegration.git`
