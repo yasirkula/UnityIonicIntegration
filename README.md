@@ -32,7 +32,7 @@ If you are using Unity 2017.3.0+ and Vuforia, check this topic for possible issu
 
 ## Ionic-side Setup
 - First things first, you should import the plugin into your Ionic app using the following command: `ionic plugin add https://github.com/yasirkula/UnityIonicIntegration.git`
-- Now, you can launch Unity from your Ionic app using the following code snippet (it is for TypeScript but shouldn't be much different for Javascript):
+- Now, you can launch Unity from your Ionic app using the following code snippet (TypeScript):
 ```typescript
 import ...
 
@@ -73,6 +73,8 @@ export class ...
 	};
 }
 ```
+
+**NOTE**: To access the plugin from Javascript, use `window.unityARCaller`.
 
 - All you have to do is call `launchAR( parameter, onReturnedToIonicCallback, onMessageReceivedCallback )` function whenever you want to show Unity content. Here, *parameter* is the optional *String* parameter that is passed to Unity right after it is launched (see [Unity-side Setup](#unity-side-setup)). Upon returning to Ionic from Unity, **onReturnedToIonicCallback** is triggered with an (optional) *String* parameter *param* that is returned from the Unity-side
 
