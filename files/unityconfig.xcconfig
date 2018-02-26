@@ -10,8 +10,8 @@ OTHER_CFLAGS = -DINIT_SCRIPTING_BACKEND=1
 OTHER_CPLUSPLUSFLAGS = -DINIT_SCRIPTING_BACKEND=1
 OTHER_LDFLAGS = -ObjC -lc++ -weak_framework AVFoundation -weak_framework Coremotion -weak-lSystem -framework AssetsLibrary -framework AudioToolbox -framework CFNetwork -framework CoreGraphics -framework CoreLocation -framework CoreMedia -framework CoreMotion -framework CoreText -framework CoreVideo -framework Foundation -framework iAd  -framework MediaPlayer -framework OpenGLES -framework OpenAL -framework QuartzCore -framework Security -framework SystemConfiguration -framework UIKit
 
-HEADER_SEARCH_PATHS = $(UNITY_IOS_EXPORTED_PATH)/Classes/Native $(UNITY_IOS_EXPORTED_PATH)/Classes $(UNITY_IOS_EXPORTED_PATH) $(UNITY_IOS_EXPORTED_PATH)/Libraries $(UNITY_IOS_EXPORTED_PATH)/Libraries/bdwgc/include $(UNITY_IOS_EXPORTED_PATH)/Libraries/libil2cpp/include
-LIBRARY_SEARCH_PATHS = $(UNITY_IOS_EXPORTED_PATH)/Libraries/Plugins/iOS $(UNITY_IOS_EXPORTED_PATH)/Libraries $(UNITY_IOS_EXPORTED_PATH)
+HEADER_SEARCH_PATHS = "$(UNITY_IOS_EXPORTED_PATH)/Classes/Native" "$(UNITY_IOS_EXPORTED_PATH)/Classes" "$(UNITY_IOS_EXPORTED_PATH)" "$(UNITY_IOS_EXPORTED_PATH)/Libraries" "$(UNITY_IOS_EXPORTED_PATH)/Libraries/bdwgc/include" "$(UNITY_IOS_EXPORTED_PATH)/Libraries/libil2cpp/include"
+LIBRARY_SEARCH_PATHS = "$(UNITY_IOS_EXPORTED_PATH)/Libraries/Plugins/iOS" "$(UNITY_IOS_EXPORTED_PATH)/Libraries" "$(UNITY_IOS_EXPORTED_PATH)"
 
 CLANG_CXX_LANGUAGE_STANDARD = c++0x
 CLANG_CXX_LIBRARY = libc++;
