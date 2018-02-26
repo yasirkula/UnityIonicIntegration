@@ -165,6 +165,7 @@ If you want consistency for your app, go with the second option.
 ![](images/ios2.png?raw=true "")
 
 - Remove the **Libraries/libil2cpp** folder in Unity group from your Xcode project using **Remove References**
+- Remove the **Libraries/Plugins/Android** folder (if exists) in Unity group from your Xcode project using **Remove References**
 - In **Configurations** of your project, set all the configurations as **unityconfig**
 
 ![](images/ios3.png?raw=true "")
