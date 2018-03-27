@@ -76,13 +76,13 @@ export class ...
 }
 ```
 
-**NOTE**: To access the plugin from Javascript, use `window.unityARCaller`.
+**NOTE**: to access the plugin from Javascript, use `window.unityARCaller`.
 
 - All you have to do is call `launchAR( parameter, onReturnedToIonicCallback, onMessageReceivedCallback )` function whenever you want to show Unity content. Here, *parameter* is the optional *String* parameter that is passed to Unity right after it is launched (see [Unity-side Setup](#unity-side-setup)). Upon returning to Ionic from Unity, **onReturnedToIonicCallback** is triggered with an (optional) *String* parameter *param* that is returned from the Unity-side
 
 - Unity and Ionic can keep communicating even while Unity view/activity is active. You can call a function on Unity-side from Ionic using the `unityARCaller.sendMessage( "Function name", "Optional parameter" );` function and, if you want, send a message back to Ionic (see [Unity-side Setup](#unity-side-setup)) that triggers **onMessageReceivedCallback**
 
-**NOTE:** On Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, onReturnedToIonicCallback can not be called.
+**NOTE:** on Android platform, if device runs out of memory while running the Unity activity, the Ionic activity is stopped and then automatically restarted by Android OS upon returning to Ionic from Unity. In that case, unfortunately, onReturnedToIonicCallback can not be called.
 
 ## Unity-side Setup 
 - Import **IonicComms.cs** script (available in **files** directory of this git repo) into your project. You don't have to attach this script to any GameObject but feel free to do it if you want to assign some references to it through Inspector. Just be aware that there can only be a single living instance of *IonicComms* component at a time and if you want to attach it manually to a GameObject, you must do it in the first scene of your project
@@ -97,6 +97,8 @@ export class ...
 - *for iOS:* in Player Settings, set **Scripting Backend** to **IL2CPP** and then simply build your project to an empty folder
 
 ## Android Steps
+**NOTE:** see the following topic if your Unity Android project has any gradle dependencies and the Android Studio steps below yield a `Failed to resolve:` error: https://github.com/yasirkula/UnityIonicIntegration/issues/21
+
 - Build your Ionic project using `ionic build android` (use `ionic platform add android`, if Android platform is not added yet)
 - Open *platforms/android* folder inside your Ionic project's path with Android Studio
 - Open **settings.gradle** and insert the following lines (**don't forget to change the path in the second line!**):
