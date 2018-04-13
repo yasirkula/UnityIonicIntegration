@@ -149,7 +149,7 @@ If you want consistency for your app, go with the second option.
 **IMPORTANT NOTICE:** make sure that the paths to your Ionic project and Unity build directory do not contain any space characters.
 - Build your Ionic project using `sudo ionic build ios` (use `sudo ionic platform add ios`, if iOS platform is not added yet). If you receive the following error at the end, it means the build was successful, no worries: *Signing for "MyIonicProject" requires a development team. Select a development team in the project editor.*
 - (optional) use command `sudo chmod -R 777 .` to give full read/write access to the project folder in order to avoid any permission issues in Xcode
-- Open *platforms/ios* folder inside your Ionic project's path with Xcode
+- Open *platforms/ios* folder inside your Ionic project's path with Xcode ([open wcworkspace, not xcodeproj](https://github.com/yasirkula/UnityIonicIntegration/issues/22)) 
 - In *Plugins/unityARCaller.m*, uncomment the **(void)launchAR** and **(void)sendMessage** functions
 - Rename *Classes/AppDelegate.m* to **Classes/AppDelegate.mm** (changed **.m** to **.mm**) and *Other Sources/main.m* to **Other Sources/main.mm**
 - Change the contents of **Classes/AppDelegate.h** with the AppDelegate.h found in **files** directory of this repo
