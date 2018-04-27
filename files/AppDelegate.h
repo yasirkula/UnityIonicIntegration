@@ -16,8 +16,8 @@
 @property (readwrite, assign) unityARCaller* ionicComms;
 @property (nonatomic, copy) NSString* m_waitingMessage;
 
-@property (readwrite, assign) UIApplication* m_application;
-@property (readwrite, assign) NSDictionary* m_options;
+@property (readwrite, strong) UIApplication* m_application;
+@property (readwrite, strong) NSDictionary* m_options;
 
 - (void)shouldAttachRenderDelegate;
 
