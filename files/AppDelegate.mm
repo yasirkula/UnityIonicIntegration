@@ -67,7 +67,6 @@
     if( self.m_waitingMessage != nil )
     {
         [self sendMessageToUnity:self.m_waitingMessage];
-        
         self.m_waitingMessage = nil;
     }
 }
@@ -75,22 +74,25 @@
 // Source: https://the-nerd.be/2014/08/07/call-methods-on-unity3d-straight-from-your-objective-c-code/
 - (void)sendMessageToUnity:(NSString*)parameter
 {
+	if( !parameter || [parameter isKindOfClass:[NSNull class]] )
+		return;
+
     if( self.unityInitialized )
-    {
         UnitySendMessage("IonicComms", "OnMessageReceivedFromIonic", [parameter UTF8String]);
-    }
     else
-    {
         self.m_waitingMessage = parameter;
-    }
 }
 
 - (void)sendMessageToUnity:(NSString*)func parameter:(NSString*)parameter
 {
+	if( !func || [func isKindOfClass:[NSNull class]] )
+		return;
+	
+	if( !parameter || [parameter isKindOfClass:[NSNull class]] )
+		return;
+	
     if( self.unityInitialized )
-    {
         UnitySendMessage("IonicComms", [func UTF8String], [parameter UTF8String]);
-    }
 }
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
@@ -110,11 +112,17 @@
 
 - (void)sendMessageToIonic:(NSString*)message
 {
+	if( !message || [message isKindOfClass:[NSNull class]] )
+		return;
+	
     [self.ionicComms receivedMessageFromUnity:message];
 }
 
 - (void)sendResultToIonic:(NSString*)result
 {
+	if( !result || [result isKindOfClass:[NSNull class]] )
+		return;
+	
     [self.ionicComms returnResult:result];
 }
 
