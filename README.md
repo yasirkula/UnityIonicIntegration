@@ -176,7 +176,7 @@ If you want consistency for your app, go with the second option.
 
 ![](images/ios4.png?raw=true "")
 
-- In **Build Settings**, select **Prefix Header** and press Delete to revert its value back to the default value (in case it is overridden)(do this for *PROJECT* and the *TARGETS*)
+- In **Build Settings**, select **Prefix Header** and press Delete to revert its value back to the default value (in case it is overridden)(do this for *PROJECT* and the *TARGETS*)(if *Prefix Header* becomes blank after this step, apply this fix: https://github.com/yasirkula/UnityIonicIntegration/issues/12#issuecomment-389437474)
 - Open **Classes/UnityAppController.h** in Unity group and find the following function:
 ```objc
 inline UnityAppController* GetAppController()
