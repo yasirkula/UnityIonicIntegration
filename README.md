@@ -134,6 +134,8 @@ compile project(':UnityProject')
 
 ![](images/android2.png?raw=true "")
 
+- If you receive a "*Could not find method compile()*" error, see: https://github.com/yasirkula/UnityIonicIntegration/issues/52
+
 **NOTE:** if you are able to build your Ionic project successfully the first time but not the second time, remove the Android platform using `ionic platform remove android` and add it again using `ionic platform add android`.
 
 ### About 64-bit ARM, x86 and x64 Android Devices
