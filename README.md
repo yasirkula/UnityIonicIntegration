@@ -143,9 +143,18 @@ As of now, Unity has a native library for **32-bit ARM** and **x86** architectur
 - If there are any **arm64-v8a**, **armeabi** or **x86_64** folders in the **jniLibs** directory of your Android Studio project, simply delete these folders. Your application will not be affected by this change as long as plugins in these folders have libraries in **armeabi-v7a** and **x86** folders, as well
 - If there is any plugin in your project that has a library in **armeabi-v7a** folder but not in **x86** folder (like *Vuforia*, unfortunately), you have to make the following decision: 
   - either don't touch anything and your Ionic application will run on all architectures but the Unity content **will not launch** on Intel architecture devices (*x86* and *x64*)
-  - or delete the *x86* folder and both your Ionic application and the Unity content will run on all *ARM* architectures as well as on Intel architectures that support emulating ARM applications
+  - or delete the *x86* folder and both your Ionic application and the Unity content will run on all *ARM* architectures as well as on Intel architectures that support emulating ARM applications (also note that Unity 2019.3+ [no longer supports x86](https://blogs.unity3d.com/2019/03/05/android-support-update-64-bit-and-app-bundles-backported-to-2017-4-lts))
 
 If you want consistency for your app, go with the second option.
+
+### Troubleshooting
+- `Activity has leaked IntentReceiver org.apache.cordova.plugin.CordovaUnityLauncher$UnityToIonicBroadcastReceiver that was originally registered here. Are you missing a call to unregisterReceiver()?`
+
+See: https://github.com/yasirkula/UnityIonicIntegration/issues/61
+
+- `Unity : Failed to load 'libmain.so', the application will terminate.`
+
+Disable *Strip Engine Code* in Player Settings ([source](https://github.com/yasirkula/UnityIonicIntegration/issues/64#issuecomment-587268127)).
 
 ## iOS Steps
 **IMPORTANT NOTICE:** make sure that the paths to your Ionic project and Unity build directory do not contain any space characters.
