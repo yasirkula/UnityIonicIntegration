@@ -9,6 +9,8 @@ Before we start, I'd like to give credits to these other guides that helped me o
 
 Also, a special thanks to all who contributed to the development of this plugin :)
 
+**[Support the Developer ☕](https://yasirkula.itch.io/unity3d)**
+
 ## System Requirements
 - Android: Android Studio
 - iOS: Xcode
