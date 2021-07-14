@@ -1,4 +1,7 @@
 # Unity Ionic Integration (with Vuforia support)
+
+**This plugin is NO LONGER MAINTAINED by the author. It has been ~3 years since I've last used Ionic or tested this integration. The repository isn't archived for the sole purpose of keeping the [Issues](https://github.com/yasirkula/UnityIonicIntegration/issues) active (it is a community effort, I don't necessarily provide support myself). Please note that Unity's official [Unity as a Library](https://unity.com/features/unity-as-a-library) method might be more stable than this integration, though I haven't tested it myself.**
+
 This tutorial will show you how to integrate your Unity app into an Ionic app and send messages between them (optional). It is tested on a medium-scale commercial Unity project with Vuforia plugin (optional).
 
 Before we start, I'd like to give credits to these other guides that helped me overcome some challenges I've faced along the way:
