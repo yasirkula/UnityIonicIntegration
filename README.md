@@ -14,7 +14,7 @@ Also, a special thanks to all who contributed to the development of this plugin 
 
 **Discord:** https://discord.gg/UJJt549AaV
 
-**[Support the Developer ☕](https://yasirkula.itch.io/unity3d)**
+**[GitHub Sponsors ☕](https://github.com/sponsors/yasirkula)**
 
 ## System Requirements
 - Android: Android Studio
